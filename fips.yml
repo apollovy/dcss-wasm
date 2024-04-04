@@ -1,0 +1,7 @@
+#
+# dcss
+#
+---
+imports:
+  zlib:
+    git: git@github.com:madler/zlib.git
