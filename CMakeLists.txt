@@ -55,3 +55,4 @@ target_compile_definitions(dcss PRIVATE
 )
 fips_src(${CRAWL_SOURCE} EXCEPT libunix.cc NO_RECURSE)
 fips_src(${RLTILES_SOURCE_ROOT} NO_RECURSE)
+fips_src(${CRAWL_SOURCE}/prebuilt NO_RECURSE)
