@@ -43,10 +43,13 @@ target_include_directories(dcss PRIVATE ${SQLITE_SOURCE_ROOT} NO_RECURSE)
 
 set(RLTILES_SOURCE_ROOT ${CRAWL_SOURCE}/rltiles)
 target_include_directories(dcss PRIVATE ${CRAWL_SOURCE} ${RLTILES_SOURCE_ROOT} NO_RECURSE)
-target_compile_options(dcss PRIVATE -fexceptions -frtti -sUSE_SDL)
+target_compile_options(dcss PRIVATE -fexceptions -frtti -sUSE_SDL=2 -sUSE_SDL_IMAGE=2)
 target_compile_definitions(dcss PRIVATE
     MONOSPACED_FONT=\"contrib/fonts/DejaVuSansMono.ttf\"
     PROPORTIONAL_FONT=\"contrib/fonts/DejaVuSans.ttf\"
+    USE_GL
+    USE_GLES
+    USE_SDL
     USE_TILE
     USE_TILE_LOCAL
 )
