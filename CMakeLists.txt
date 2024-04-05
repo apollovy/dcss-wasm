@@ -8,6 +8,10 @@ set(CMAKE_CXX_STANDARD 11)
 set(CRAWL_SOURCE crawl/crawl-ref/source)
 set(CRAWL_CONTRIB ${CRAWL_SOURCE}/contrib)
 set(BUILD_SHARED_LIBS false)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -s USE_WEBGL2=1 -s USE_GLFW=3 --use-port=freetype")
+set(SDL2_LIBRARIES "-sUSE_SDL=2")
+set(SDL2_IMAGE_LIBRARIES "-sUSE_SDL_IMAGE=2")
+set(DISABLE_EXCEPTION_CATCHING 0)
 
 # include the fips main cmake file
 get_filename_component(FIPS_ROOT_DIR "../fips" ABSOLUTE)
@@ -47,6 +51,7 @@ target_compile_options(dcss PRIVATE -fexceptions -frtti -sUSE_SDL=2 -sUSE_SDL_IM
 target_compile_definitions(dcss PRIVATE
     MONOSPACED_FONT=\"contrib/fonts/DejaVuSansMono.ttf\"
     PROPORTIONAL_FONT=\"contrib/fonts/DejaVuSans.ttf\"
+    USE_FT
     USE_GL
     USE_GLES
     USE_SDL
@@ -56,3 +61,17 @@ target_compile_definitions(dcss PRIVATE
 fips_src(${CRAWL_SOURCE} EXCEPT libunix.cc NO_RECURSE)
 fips_src(${RLTILES_SOURCE_ROOT} NO_RECURSE)
 fips_src(${CRAWL_SOURCE}/prebuilt NO_RECURSE)
+execute_process(
+    COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/crawl/crawl-ref/source/dat ./dat
+    COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/crawl/crawl-ref/docs ./docs
+    COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/crawl/crawl-ref/settings ./settings
+)
+
+target_link_libraries(dcss
+    ${SDL2_LIBRARIES}
+    ${SDL2_IMAGE_LIBRARIES}
+    "-s LEGACY_GL_EMULATION=1 -sFILESYSTEM -sGL_UNSAFE_OPTS=0"
+    "--preload-file ./dat"
+    "--preload-file ./docs"
+    "--preload-file ./settings"
+)
