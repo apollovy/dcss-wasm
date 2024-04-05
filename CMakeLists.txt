@@ -77,3 +77,6 @@ target_link_libraries(dcss
     "--preload-file settings"
     "--preload-file fonts"
 )
+if (CMAKE_BUILD_TYPE EQUAL "Debug")
+    target_link_libraries(dcss "-g")
+endif()
