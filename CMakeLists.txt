@@ -49,16 +49,19 @@ set(RLTILES_SOURCE_ROOT ${CRAWL_SOURCE}/rltiles)
 target_include_directories(dcss PRIVATE ${CRAWL_SOURCE} ${RLTILES_SOURCE_ROOT} NO_RECURSE)
 target_compile_options(dcss PRIVATE -fexceptions -frtti -sUSE_SDL=2 -sUSE_SDL_IMAGE=2)
 target_compile_definitions(dcss PRIVATE
+    ASSERTS
+    CLUA_BINDINGS
     MONOSPACED_FONT=\"./fonts/DejaVuSansMono.ttf\"
     PROPORTIONAL_FONT=\"./fonts/DejaVuSans.ttf\"
+    TOUCH_UI
     USE_FT
     USE_GL
     USE_GLES
     USE_SDL
     USE_TILE
     USE_TILE_LOCAL
+    WIZARD
 )
-# xcode settings: ASSERTS=1 CLUA_BINDINGS=1 DCSS_IOS=1 ENABLE_NLS=1 MONOSPACED_FONT=\"./fonts/DejaVuSansMono.ttf\" PROPORTIONAL_FONT=\"./fonts/DejaVuSans.ttf\" TOUCH_UI=1 USE_FT=1 USE_GL=1 USE_GLES=1 USE_SDL=1 USE_TILE=1 USE_TILE_LOCAL=1 HAVE_STAT=1 WIZARD=1 USE_SOUND=1
 fips_src(${CRAWL_SOURCE} EXCEPT libunix.cc NO_RECURSE)
 fips_src(${RLTILES_SOURCE_ROOT} NO_RECURSE)
 fips_src(${CRAWL_SOURCE}/prebuilt NO_RECURSE)
