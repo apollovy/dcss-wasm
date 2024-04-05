@@ -49,8 +49,8 @@ set(RLTILES_SOURCE_ROOT ${CRAWL_SOURCE}/rltiles)
 target_include_directories(dcss PRIVATE ${CRAWL_SOURCE} ${RLTILES_SOURCE_ROOT} NO_RECURSE)
 target_compile_options(dcss PRIVATE -fexceptions -frtti -sUSE_SDL=2 -sUSE_SDL_IMAGE=2)
 target_compile_definitions(dcss PRIVATE
-    MONOSPACED_FONT=\"contrib/fonts/DejaVuSansMono.ttf\"
-    PROPORTIONAL_FONT=\"contrib/fonts/DejaVuSans.ttf\"
+    MONOSPACED_FONT=\"./fonts/DejaVuSansMono.ttf\"
+    PROPORTIONAL_FONT=\"./fonts/DejaVuSans.ttf\"
     USE_FT
     USE_GL
     USE_GLES
@@ -58,20 +58,22 @@ target_compile_definitions(dcss PRIVATE
     USE_TILE
     USE_TILE_LOCAL
 )
+# xcode settings: ASSERTS=1 CLUA_BINDINGS=1 DCSS_IOS=1 ENABLE_NLS=1 MONOSPACED_FONT=\"./fonts/DejaVuSansMono.ttf\" PROPORTIONAL_FONT=\"./fonts/DejaVuSans.ttf\" TOUCH_UI=1 USE_FT=1 USE_GL=1 USE_GLES=1 USE_SDL=1 USE_TILE=1 USE_TILE_LOCAL=1 HAVE_STAT=1 WIZARD=1 USE_SOUND=1
 fips_src(${CRAWL_SOURCE} EXCEPT libunix.cc NO_RECURSE)
 fips_src(${RLTILES_SOURCE_ROOT} NO_RECURSE)
 fips_src(${CRAWL_SOURCE}/prebuilt NO_RECURSE)
-execute_process(
-    COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/crawl/crawl-ref/source/dat ./dat
-    COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/crawl/crawl-ref/docs ./docs
-    COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/crawl/crawl-ref/settings ./settings
-)
+
+install(DIRECTORY ${CRAWL_SOURCE}/dat/ DESTINATION dat/)
+install(DIRECTORY ${CRAWL_SOURCE}/../docs/ DESTINATION docs/)
+install(DIRECTORY ${CRAWL_SOURCE}/../settings/ DESTINATION settings/)
+install(DIRECTORY ${CRAWL_CONTRIB}/fonts/ DESTINATION fonts/)
 
 target_link_libraries(dcss
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
-    "-s LEGACY_GL_EMULATION=1 -sFILESYSTEM -sGL_UNSAFE_OPTS=0"
-    "--preload-file ./dat"
-    "--preload-file ./docs"
-    "--preload-file ./settings"
+    "-s LEGACY_GL_EMULATION=1 -sFILESYSTEM -sGL_UNSAFE_OPTS=0 -sSDL2_IMAGE_FORMATS='[\"png\"]'"
+    "--preload-file dat"
+    "--preload-file docs"
+    "--preload-file settings"
+    "--preload-file fonts"
 )
