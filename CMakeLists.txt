@@ -13,7 +13,6 @@ set(CMAKE_CXX_FLAGS "       \
     -fexceptions            \
     -frtti                  \
     -sMAX_WEBGL_VERSION=2   \
-    -sUSE_GLFW=3            \
     --use-port=freetype     \
     --use-port=sdl2         \
     --use-port=sdl2_image   \
@@ -40,9 +39,6 @@ target_include_directories(dcss PRIVATE ${LUA_SOURCE_ROOT} NO_RECURSE)
 
 set(RLTILES_SOURCE_ROOT ${CRAWL_SOURCE}/rltiles)
 target_include_directories(dcss PRIVATE ${CRAWL_SOURCE} ${RLTILES_SOURCE_ROOT} NO_RECURSE)
-target_link_options(dcss PRIVATE
-    -O2 # this is needed because using asyncify with lesser optimizations causes crashes at runtime, see https://github.com/emscripten-core/emscripten/issues/19346
-)
 target_compile_definitions(dcss PRIVATE
     ASSERTS
     CLUA_BINDINGS
@@ -67,9 +63,8 @@ file(COPY ${CRAWL_SOURCE}/../settings/ DESTINATION settings/)
 file(COPY ${CRAWL_CONTRIB}/fonts/ DESTINATION fonts/)
 
 target_link_libraries(dcss
-    -sLEGACY_GL_EMULATION=1  # FIXME
+    -sLEGACY_GL_EMULATION=1
     -sFILESYSTEM
-    -sGL_UNSAFE_OPTS=0
     -sSDL2_IMAGE_FORMATS='["png"]'
 
     "--preload-file dat"
@@ -82,19 +77,31 @@ target_link_libraries(dcss
 )
 
 message("Build type: ${CMAKE_BUILD_TYPE}")
+set(COMMON_FLAGS
+    # without this the game suddenly throws an exception and dies. It should be
+    # added at the end to override all other injections of this flag.
+    -sDISABLE_EXCEPTION_CATCHING=0
+)
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
-    target_compile_options(dcss PRIVATE
+    set(COMMON_FLAGS
+        ${COMMON_FLAGS}
         -g3
     )
+    target_compile_options(dcss PRIVATE
+        ${COMMON_FLAGS}
+    )
     target_link_options(dcss PRIVATE
-        -gsource-map
-        -sDISABLE_EXCEPTION_CATCHING=0
+        ${COMMON_FLAGS}
     )
 else()
-    target_compile_options(dcss PRIVATE
+    set(COMMON_FLAGS
+        ${COMMON_FLAGS}
         -g0
     )
+    target_compile_options(dcss PRIVATE
+        ${COMMON_FLAGS}
+    )
     target_link_options(dcss PRIVATE
-        -g0
+        ${COMMON_FLAGS}
 )
 endif()
